@@ -1,43 +1,34 @@
 <template>
   <div>
-  <h1>Instructor Management Pannel</h1>
-  <div class="container">
-          <table>
-          <tr>
-            <th>St. Code</th>
-            <th>St. Name</th>
-            <th>Homework 1</th>
-            <th>Homework 2</th>
-            <th>Exam</th>
-            <th>Final grade</th>
-          </tr>
-          <tr class="item" v-for="grade in grades" :key="grade.id">
-            <td><input name="studentcode" type="text" id="studentcode" required v-model="grade.studentcode"></td>
-            <td><input name="studentname" type="text" id="studentname" required v-model="grade.studentname"></td>
-            <td><input name="hw1" type="number" id="hw1" required v-model="grade.hw1"></td>
-            <td><input name="hw2" type="number" id="hw2" required v-model="grade.hw2"></td>
-            <td><input name="exam" type="number" id="exam" required v-model="grade.exam "></td>
-            <td><input name="final" type="number" id="final" required v-model="grade.final "></td>
-          </tr>
-          </table>
+    <h1>Instructor Management Panel</h1>
+    <div class="container">
+      <table>
+        <tr>
+          <th>St. Code</th>
+          <th>St. Name</th>
+          <th>Homework 1</th>
+          <th>Homework 2</th>
+          <th>Exam</th>
+          <th>Final grade</th>
+        </tr>
+        <tr class="item" v-for="grade in grades" :key="grade.id">
+          <td><input name="studentcode" type="text" id="studentcode" required v-model="grade.studentcode"></td>
+          <td><input name="studentname" type="text" id="studentname" required v-model="grade.studentname"></td>
+          <td><input name="hw1" type="number" id="hw1" required v-model="grade.hw1" @input="calculateFinalGrade(grade)"></td>
+          <td><input name="hw2" type="number" id="hw2" required v-model="grade.hw2" @input="calculateFinalGrade(grade)"></td>
+          <td><input name="exam" type="number" id="exam" required v-model="grade.exam" @input="calculateFinalGrade(grade)"></td>
+          <td> <div class="finalgrade">{{ grade.final }}</div></td>
+        </tr>
+      </table>
     </div>
-  </div> 
+  </div>
 </template>
-
 
 <script>
 export default {
   name: "Instructor",
   data() {
     return {
-      grade: {
-        studentcode: "",
-        studentname: "",
-        hw1: null,
-        hw2: null,
-        exam: null,
-        final: null,
-      },
       grades: [],
     };
   },
@@ -47,12 +38,21 @@ export default {
         .then((response) => response.json())
         .then((data) => (this.grades = data))
         .catch((err) => console.log(err.message));
+    },
+    calculateFinalGrade(grade) {
+      grade.final = (parseFloat(grade.hw1) + parseFloat(grade.hw2) + parseFloat(grade.exam)) ;
+    },
   },
+  watch: {
+    grades: {
+      handler: "calculateFinalGrade",
+      deep: true,
+    },
   },
   mounted() {
     this.fetchRecords();
     console.log("mounted");
-  } 
+  },
 };
 </script>
 
@@ -71,10 +71,13 @@ h1 {
   border-radius: 20px;
   display: flex;
   justify-content: center;
-  
 }
-input{
+input {
   width: 100px;
-  text-align: center
+  text-align: center;
+}
+
+.finalgrade{
+  background-color: aqua;
 }
 </style>
