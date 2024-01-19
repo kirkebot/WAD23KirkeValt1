@@ -10,7 +10,7 @@
           <th>Homework 2</th>
           <th>Exam</th>
           <th>Final grade</th>
-          <th>Actions</th>
+          <th></th>
         </tr>
         <tr class="item" v-for="grade in grades" :key="grade.id">
           <td><input name="studentcode" type="text" id="studentcode" required v-model="grade.studentcode"></td>
@@ -19,7 +19,7 @@
           <td><input name="hw2" type="number" id="hw2" required v-model="grade.hw2" @input="calculateFinalGrade(grade)"></td>
           <td><input name="exam" type="number" id="exam" required v-model="grade.exam" @input="calculateFinalGrade(grade)"></td>
           <td><div class="finalgrade">{{ grade.final }}</div></td>
-          <td><button class="update" @click="updateGrade(grade)">Update</button></td>
+          <td><button class="update" @click="updateGrade(grade)">update</button></td>
         </tr>
       </table>
     </div>
@@ -61,11 +61,11 @@ export default {
       })
         .then((response) => response.json())
         .then((data) => {
-          // Assuming the server returns the updated data, you can update the local grades array
           const index = this.grades.findIndex((g) => g.id === grade.id);
           if (index !== -1) {
             this.$set(this.grades, index, data);
           }
+          this.$router.push('Students');
         })
         .catch((err) => console.log(err.message));
     },
