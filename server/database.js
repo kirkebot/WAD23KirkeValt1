@@ -4,7 +4,7 @@ const pool = new Pool({
     password: "sql", // Enter your password here
     database: "testWad", //Try to use the same name for your database
     host: "localhost",
-    port: "5433"
+    port: "5432"
 });
 
 const execute = async(createTblQuery, insertDataQuery) => {
