@@ -19,7 +19,9 @@
             <td>{{ grade.hw1 }}</td>
             <td>{{ grade.hw2 }}</td>
             <td>{{ grade.exam }}</td>
-            <td>{{ grade.final }}</td>
+            <td :style="{background: grade.final <= 20 || grade.exam <= 20 ? 'red' : 'green' }">
+              {{ grade.final }}
+            </td>
           </tr>
         </tbody>
       </table>
