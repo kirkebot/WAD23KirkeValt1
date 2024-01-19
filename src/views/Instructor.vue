@@ -10,6 +10,7 @@
           <th>Homework 2</th>
           <th>Exam</th>
           <th>Final grade</th>
+          <th>Actions</th>
         </tr>
         <tr class="item" v-for="grade in grades" :key="grade.id">
           <td><input name="studentcode" type="text" id="studentcode" required v-model="grade.studentcode"></td>
@@ -17,7 +18,8 @@
           <td><input name="hw1" type="number" id="hw1" required v-model="grade.hw1" @input="calculateFinalGrade(grade)"></td>
           <td><input name="hw2" type="number" id="hw2" required v-model="grade.hw2" @input="calculateFinalGrade(grade)"></td>
           <td><input name="exam" type="number" id="exam" required v-model="grade.exam" @input="calculateFinalGrade(grade)"></td>
-          <td> <div class="finalgrade">{{ grade.final }}</div></td>
+          <td><div class="finalgrade">{{ grade.final }}</div></td>
+          <td><button class="update" @click="updateGrade(grade)">Update</button></td>
         </tr>
       </table>
     </div>
@@ -40,7 +42,32 @@ export default {
         .catch((err) => console.log(err.message));
     },
     calculateFinalGrade(grade) {
-      grade.final = (parseFloat(grade.hw1) + parseFloat(grade.hw2) + parseFloat(grade.exam)) ;
+      grade.final = parseFloat(grade.hw1) + parseFloat(grade.hw2) + parseFloat(grade.exam);
+    },
+    updateGrade(grade) {
+      fetch(`http://localhost:3000/api/grades/${grade.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studentcode: grade.studentcode,
+          studentname: grade.studentname,
+          hw1: grade.hw1,
+          hw2: grade.hw2,
+          exam: grade.exam,
+          final: grade.final,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // Assuming the server returns the updated data, you can update the local grades array
+          const index = this.grades.findIndex((g) => g.id === grade.id);
+          if (index !== -1) {
+            this.$set(this.grades, index, data);
+          }
+        })
+        .catch((err) => console.log(err.message));
     },
   },
   watch: {
@@ -77,7 +104,11 @@ input {
   text-align: center;
 }
 
-.finalgrade{
+.finalgrade {
   background-color: aqua;
+}
+
+.update {
+  background: aqua;
 }
 </style>
